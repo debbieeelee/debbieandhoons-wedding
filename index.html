@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이동훈 & 선우 결혼합니다</title>
+    <!-- 우아한 분위기를 위한 폰트 (Noto Serif KR) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* 기본 스타일 설정 (모바일 최적화) */
+        body {
+            font-family: 'Noto Serif KR', serif;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            word-break: keep-all;
+        }
+        /* 모바일 화면 너비 제한 */
+        .wrap {
+            max-width: 480px;
+            width: 100%;
+            background-color: #ffffff;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        section {
+            padding: 60px 24px;
+            text-align: center;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            color: #555;
+        }
+        p {
+            line-height: 2;
+            font-size: 0.95rem;
+            color: #555;
+            margin: 10px 0;
+        }
+        
+        /* 메인 커버 섹션 */
+        .main-cover {
+            padding: 0;
+            position: relative;
+        }
+        .main-img {
+            width: 100%;
+            height: auto;
+            display: block;
+            /* 메인 사진이 없을 때를 대비한 임시 배경색 */
+            background-color: #eaddd7; 
+            min-height: 500px; 
+        }
+        .main-title {
+            padding: 40px 20px;
+        }
+        .main-title h1 {
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin: 0 0 10px 0;
+        }
+        .main-title p {
+            font-size: 1rem;
+            margin: 0;
+        }
+
+        /* 자필 편지 섹션 */
+        .letter-section {
+            background-color: #fdfdfd;
+        }
+        .letter-img-box {
+            margin-top: 30px;
+        }
+        .letter-img-box img {
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+
+        /* 지도 섹션 */
+        .map-section {
+            padding-bottom: 80px;
+        }
+        .btn-naver-map {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 24px;
+            background-color: #03C75A; /* 네이버 고유 색상 */
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* 계좌번호 섹션 */
+        .account-box {
+            background-color: #f8f8f8;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: left;
+        }
+        .account-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eaeaea;
+        }
+        .account-info:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .copy-btn {
+            background-color: #ddd;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Noto Serif KR', serif;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrap">
+    <!-- 1. 메인 커버 -->
+    <section class="main-cover">
+        <!-- 메인 웨딩 사진 경로를 넣어주세요 -->
+        <img src="images/main_photo.jpg" alt="웨딩 사진" class="main-img" onerror="this.style.display='none'">
+        <div class="main-title">
+            <h1>이동훈 & 선우</h1>
+            <p>2026년 11월 1일 일요일</p>
+        </div>
+    </section>
+
+    <!-- 2. 초대 글 -->
+    <section class="greeting-section">
+        <h2>INVITATION</h2>
+        <p>
+            서로가 마주 보며 다져온 사랑을<br>
+            이제 함께 한 곳을 바라보며 걸어가려 합니다.<br><br>
+            저희 두 사람이 사랑의 이름으로<br>
+            지켜나갈 수 있도록 앞날을<br>
+            축복해 주시면 감사하겠습니다.
+        </p>
+    </section>
+
+    <!-- 3. 자필 편지 (핵심 요청 부분) -->
+    <section class="letter-section">
+        <h2>HEARTFELT LETTERS</h2>
+        <p>감사의 마음을 담아 직접 적어 내려간<br>저희와 부모님의 진심입니다.</p>
+        
+        <div class="letter-img-box">
+            <!-- 준비하신 양가 부모님 편지 사진 경로 -->
+            <img src="images/letter_parents.jpg" alt="양가 부모님 자필 편지">
+            <!-- 준비하신 신랑 신부 편지 사진 경로 -->
+            <img src="images/letter_couple.jpg" alt="신랑 신부 자필 편지">
+        </div>
+    </section>
+
+    <!-- 4. 오시는 길 (네이버 지도 연동) -->
+    <section class="map-section">
+        <h2>LOCATION</h2>
+        <p><strong>웨딩홀 이름</strong></p>
+        <p>주소: 서울특별시 강남구 00로 000</p>
+        
+        <!-- 네이버 지도 빠른 업데이트 및 상세 정보를 위한 버튼 연동 -->
+        <a href="https://map.naver.com/v5/search/웨딩홀이름" target="_blank" class="btn-naver-map">
+            네이버 지도로 길찾기
+        </a>
+    </section>
+
+    <!-- 5. 마음 전하실 곳 (계좌번호) -->
+    <section class="account-section">
+        <h2>마음 전하실 곳</h2>
+        <p>참석이 어려우신 분들을 위해<br>계좌번호를 기재하였습니다.</p>
+        
+        <div class="account-box">
+            <div class="account-info">
+                <div>
+                    <strong>신랑측</strong><br>
+                    OO은행 123-456-7890 (이동훈)
+                </div>
+                <button class="copy-btn" onclick="copyAccount('1234567890')">복사</button>
+            </div>
+            <div class="account-info">
+                <div>
+                    <strong>신부측</strong><br>
+                    OO은행 098-765-4321 (선우)
+                </div>
+                <button class="copy-btn" onclick="copyAccount('0987654321')">복사</button>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- 복사 기능을 위한 JavaScript -->
+<script>
+    function copyAccount(accountNumber) {
+        // 임시 텍스트 에어리어 생성
+        var tempElem = document.createElement('textarea');
+        tempElem.value = accountNumber;  
+        document.body.appendChild(tempElem);
+
+        // 텍스트 선택 및 복사
+        tempElem.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempElem);
+
+        alert("계좌번호가 복사되었습니다.");
+    }
+</script>
+
+</body>
+</html>
