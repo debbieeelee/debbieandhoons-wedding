@@ -12,6 +12,8 @@
   }
 }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+/* iOS Safari는 cursor:pointer가 없는 div 탭을 document로 전달하지 않음 */
+[data-action], .tap, .tabbar button, button, label { cursor: pointer; }
 html, body { margin: 0; background: var(--bg); color: var(--text); }
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
