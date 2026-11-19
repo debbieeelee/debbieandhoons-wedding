@@ -1,5 +1,5 @@
 /* 오프라인 지원: 네트워크 우선, 실패 시 캐시 */
-const CACHE = 'worktime-v1';
+const CACHE = 'worktime-v2';
 const ASSETS = ['./', './index.html', './style.css', './calc.js', './app.js', './manifest.webmanifest', './icon-180.png'];
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting()));

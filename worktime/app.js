@@ -297,17 +297,34 @@
   }
 
   /* ---------- 날짜 편집 시트 ---------- */
+  // 날짜 입력칸은 한 번만 만들고, 날짜를 바꾸면 아래 칸들만 다시 채운다.
+  // (iOS 날짜 휠이 열린 채로 입력칸을 다시 만들면 이후 변경이 사라지기 때문)
+  let sheetDs = null;
   function openDay(ds) {
+    $('#sheet-body').innerHTML = `
+      <div class="row"><h3 id="f-title"></h3><button class="btn small secondary" data-action="close-sheet">닫기</button></div>
+      <div class="sub" id="f-hol"></div>
+      <label class="f">날짜</label>
+      <input type="date" id="f-date" value="${ds}">
+      <div id="f-fields"></div>`;
+    const dateEl = $('#f-date');
+    const onDate = () => { if (/^\d{4}-\d{2}-\d{2}$/.test(dateEl.value) && dateEl.value !== sheetDs) fillDay(dateEl.value); };
+    dateEl.addEventListener('input', onDate);
+    dateEl.addEventListener('change', onDate);
+    dateEl.addEventListener('blur', onDate);
+    fillDay(ds);
+    $('#sheet').classList.remove('hidden');
+  }
+  function fillDay(ds) {
+    sheetDs = ds;
     const rec = state.days[ds] || {};
     const hol = W.holidayName(state, ds);
     const dow = W.dowOf(ds);
     const isWork = !hol && dow !== 0 && dow !== 6;
     const events = (rec.events || []).slice().reverse();
-    $('#sheet-body').innerHTML = `
-      <div class="row"><h3>${Number(ds.slice(0, 4))}년 ${mdw(ds)}</h3><button class="btn small secondary" data-action="close-sheet">닫기</button></div>
-      ${hol ? `<div class="sub">${esc(hol)}</div>` : ''}
-      <label class="f">날짜</label>
-      <input type="date" id="f-date" value="${ds}" data-action="change-date">
+    $('#f-title').textContent = `${Number(ds.slice(0, 4))}년 ${mdw(ds)}`;
+    $('#f-hol').textContent = hol || '';
+    $('#f-fields').innerHTML = `
       <div class="grid2">
         <div><label class="f">출근 (실제 도착)</label><input type="time" id="f-in" value="${esc(rec.in || '')}"></div>
         <div><label class="f">퇴근 (실제 이탈)</label><input type="time" id="f-out" value="${esc(rec.out || '')}"></div>
@@ -324,12 +341,11 @@
       <input type="time" id="f-plan" value="${esc(rec.planStart || '')}">` : ''}
       <label class="f">메모</label>
       <input type="text" id="f-memo" value="${esc(rec.memo || '')}" placeholder="예: 저녁 약속, 병원">
-      <div class="btns"><button class="btn" data-action="save-day" data-ds="${ds}">저장</button></div>
-      <div class="btns"><button class="btn danger" data-action="clear-day" data-ds="${ds}">이 날 기록 지우기</button></div>
+      <div class="btns"><button class="btn" data-action="save-day">저장</button></div>
+      <div class="btns"><button class="btn danger" data-action="clear-day">이 날 기록 지우기</button></div>
       ${events.length ? `<label class="f">자동/수동 기록 이력</label><div class="sub">${events.map((e) =>
         `${e.type === 'in' ? '도착' : '이탈'} ${esc(e.time)} · ${e.source === 'shortcut' ? '단축어' : e.source === 'button' ? '버튼' : e.source === 'import' ? '가져오기' : '자동'}`).join('<br>')}</div>` : ''}
     `;
-    $('#sheet').classList.remove('hidden');
     const upd = () => {
       const i = $('#f-in').value, o = $('#f-out').value;
       let t = '';
@@ -341,21 +357,29 @@
       }
       $('#f-preview').innerHTML = t;
     };
-    $('#f-in').addEventListener('input', upd);
-    $('#f-out').addEventListener('input', upd);
+    ['input', 'change', 'blur'].forEach((evt) => { $('#f-in').addEventListener(evt, upd); $('#f-out').addEventListener(evt, upd); });
     upd();
   }
   function closeSheet() { $('#sheet').classList.add('hidden'); }
+  /** 시트에 지금 보이는 날짜 (날짜 입력칸 값 우선) */
+  function currentSheetDs() {
+    const v = $('#f-date') && $('#f-date').value;
+    return /^\d{4}-\d{2}-\d{2}$/.test(v || '') ? v : sheetDs;
+  }
 
-  function saveDay(ds) {
+  function saveDay() {
+    const ds = currentSheetDs();
+    if (ds !== sheetDs) fillDay(ds); // 혹시 날짜 변경이 반영되지 않았다면 맞춘 뒤 저장
     const rec = state.days[ds] || {};
-    const v = (id) => { const el = $(id); return el ? el.value.trim() : ''; };
+    const v = (id) => { const el = $(id); return el ? el.value.trim().slice(0, 5) : ''; };
     const set = (k, val) => { if (val) rec[k] = val; else delete rec[k]; };
     set('in', v('#f-in')); set('out', v('#f-out'));
     if ($('#f-leave')) { set('leave', v('#f-leave')); set('planStart', v('#f-plan')); if ($('#f-noot').checked) rec.noOT = true; else delete rec.noOT; }
-    set('memo', v('#f-memo'));
+    const memo = $('#f-memo') ? $('#f-memo').value.trim() : '';
+    if (memo) rec.memo = memo; else delete rec.memo;
     commitDay(ds, rec);
-    closeSheet(); render(); toast('저장했어요');
+    if (ds.slice(0, 7) !== viewYm && tab !== 'today') viewYm = ds.slice(0, 7);
+    closeSheet(); render(); toast(`${mdw(ds)} 저장했어요`);
   }
   function commitDay(ds, rec) {
     const keys = Object.keys(rec).filter((k) => k !== 'events');
@@ -534,10 +558,12 @@
       case 'goto': setTab(el.dataset.tab); break;
       case 'edit-day': openDay(ds); break;
       case 'close-sheet': closeSheet(); break;
-      case 'save-day': saveDay(ds); break;
-      case 'clear-day':
-        if (confirm(`${mdw(ds)} 기록을 모두 지울까요?`)) { delete state.days[ds]; save(); closeSheet(); render(); toast('지웠어요'); }
+      case 'save-day': saveDay(); break;
+      case 'clear-day': {
+        const d = currentSheetDs();
+        if (confirm(`${mdw(d)} 기록을 모두 지울까요?`)) { delete state.days[d]; save(); closeSheet(); render(); toast('지웠어요'); }
         break;
+      }
       case 'punch': {
         const t = nowHM(), type = el.dataset.type, today = W.ymd(new Date());
         const rec = state.days[today] || (state.days[today] = {});
@@ -609,8 +635,6 @@
     } else if (a === 'set-early' && el.value) {
       const c = state.months[viewYm] || (state.months[viewYm] = {});
       c.earlyTime = el.value; save(); render();
-    } else if (a === 'change-date' && el.value) {
-      openDay(el.value);
     }
   });
 
